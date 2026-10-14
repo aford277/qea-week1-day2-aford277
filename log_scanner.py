@@ -46,6 +46,16 @@ first_error_line = 0    # line_number of the first ERROR; 0 means none seen
 #     4. if the line is exactly "END": print "END marker reached, stopping." and `break`
 #        (do NOT count END as skipped or scanned)
 #     5. lines_scanned += 1
+for raw_line in log_text.splitlines():
+    line_number += 1
+    line = raw_line.strip()
+    if line == "" or line[0] == "#":
+        skipped += 1
+        continue
+    if line == "END":
+        print("END marker reached, stopping")
+        break
+    lines_scanned += 1
 #     6. if/elif/else on the LEVEL, written with the bars so that the word
 #        "error" inside a message does not fool you:
 #            "| ERROR |" in line   -> error_count += 1; remember line_number if it
@@ -53,6 +63,17 @@ first_error_line = 0    # line_number of the first ERROR; 0 means none seen
 #            "| WARN |"  in line   -> warn_count += 1
 #            "| INFO |"  in line   -> info_count += 1
 #            else                  -> unknown_count += 1
+    if "| ERROR |" in line:
+        error_count += 1
+        if first_error_line == 0:
+            first_error_line = line_number
+        print(f"ERROR on line N: {line_number}")
+    elif "| WARN |" in line:
+        warn_count += 1
+    elif "| INFO |" in line:
+        info_count += 1
+    else:
+        unknown_count += 1
 # Commit after the loop counts correctly.
 
 # ---- TODO 3: the verdict -------------------------------------------------------
